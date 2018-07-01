@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\helpers\EmployeeHelper;
+use app\models\Employee;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\forms\EmployeeSearch */
@@ -30,7 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'last_name',
             'address',
             'email:email',
-            //'status',
+            [
+                'attribute' => 'status',
+                'filter' => EmployeeHelper::getStatusList(), // в качестве фильтра - выпадающий список
+                'value' => function (Employee $employee) { // в качестве значения - название статуса
+                    return EmployeeHelper::getStatusName($employee->status);
+                }
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

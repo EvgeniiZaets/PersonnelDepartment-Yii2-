@@ -23,6 +23,11 @@ use Yii;
  */
 class Employee extends \yii\db\ActiveRecord
 {
+    const STATUS_PROBATION = 1;
+    const STATUS_WORK = 2;
+    const STATUS_VACATION = 3;
+    const STATUS_DISMISS = 4;
+
     /**
      * {@inheritdoc}
      */
