@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Bonus;
-use yii\data\ActiveDataProvider;
+use app\forms\BonusSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,11 +35,11 @@ class BonusController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Bonus::find(),
-        ]);
+        $searchModel = new BonusSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Contract;
-use yii\data\ActiveDataProvider;
+use app\forms\ContractSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,11 +35,11 @@ class ContractController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Contract::find(),
-        ]);
+        $searchModel = new ContractSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

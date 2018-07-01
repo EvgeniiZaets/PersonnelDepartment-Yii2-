@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Assignment;
-use yii\data\ActiveDataProvider;
+use app\forms\AssignmentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,11 +35,11 @@ class AssignmentController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Assignment::find(),
-        ]);
+        $searchModel = new AssignmentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

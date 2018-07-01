@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Interview;
-use yii\data\ActiveDataProvider;
+use app\forms\InterviewSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,11 +35,11 @@ class InterviewController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Interview::find(),
-        ]);
+        $searchModel = new InterviewSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
