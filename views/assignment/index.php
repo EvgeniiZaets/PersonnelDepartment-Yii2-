@@ -13,7 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="assignment-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a('Create Assignment', ['create'], ['class' => 'btn btn-success']) ?>
@@ -30,9 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'employee_id',
             'position_id',
             'date',
-            //'rate',
-            //'salary',
-            //'active',
+            'rate',
+            'salary',
+            'active',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

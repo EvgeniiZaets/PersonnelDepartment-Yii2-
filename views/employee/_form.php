@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use app\models\Employee;
 use app\helpers\EmployeeHelper;
 
 /* @var $this yii\web\View */

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\Vacation;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Vacation */
@@ -30,7 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'order_id',
-            'employee_id',
+            [
+                'attribute' => 'employee_id',
+                'value' => function (Vacation $vacation) {
+                    return $vacation->employee->fullName;
+                },
+            ],
             'date_from',
             'date_to',
         ],

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\models\Vacation;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\forms\VacationSearch */
@@ -27,7 +28,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'order_id',
-            'employee_id',
+            [
+                'attribute' => 'employee_id',
+                'value' => function (Vacation $vacation) {
+                    return $vacation->employee->fullName;
+                },
+            ],
             'date_from',
             'date_to',
 

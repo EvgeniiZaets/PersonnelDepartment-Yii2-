@@ -28,7 +28,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'order_id',
-            'employee_id',
             [
                 'attribute' => 'employee_id',
                 'value' => function (Recruit $recruit) {

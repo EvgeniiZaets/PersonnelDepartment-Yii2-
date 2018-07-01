@@ -13,7 +13,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="interview-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a('Create Interview', ['create'], ['class' => 'btn btn-success']) ?>
@@ -30,9 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'first_name',
             'last_name',
             'email:email',
-            //'status',
-            //'reject_reason:ntext',
-            //'employee_id',
+            'status',
+            'reject_reason:ntext',
+            'employee_id',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
