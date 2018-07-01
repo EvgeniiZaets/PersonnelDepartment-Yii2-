@@ -46,8 +46,8 @@ class Recruit extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'order_id' => 'Order ID',
-            'employee_id' => 'Employee ID',
+            'order_id' => 'Order',
+            'employee_id' => 'Employee',
             'date' => 'Date',
         ];
     }

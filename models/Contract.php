@@ -46,7 +46,7 @@ class Contract extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'employee_id' => 'Employee ID',
+            'employee_id' => 'Employee',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'date_open' => 'Date Open',

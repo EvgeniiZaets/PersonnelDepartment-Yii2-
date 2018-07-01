@@ -53,8 +53,8 @@ class Assignment extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'order_id' => 'Order ID',
-            'employee_id' => 'Employee ID',
+            'order_id' => 'Order',
+            'employee_id' => 'Employee',
             'position_id' => 'Position ID',
             'date' => 'Date',
             'rate' => 'Rate',

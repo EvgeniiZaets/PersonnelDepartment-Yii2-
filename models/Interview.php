@@ -56,7 +56,7 @@ class Interview extends \yii\db\ActiveRecord
             'email' => 'Email',
             'status' => 'Status',
             'reject_reason' => 'Reject Reason',
-            'employee_id' => 'Employee ID',
+            'employee_id' => 'Employee',
         ];
     }
 
