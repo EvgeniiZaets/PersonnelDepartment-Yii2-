@@ -28,6 +28,11 @@ class Employee extends \yii\db\ActiveRecord
     const STATUS_VACATION = 3;
     const STATUS_DISMISS = 4;
 
+    public function getFullName()
+    {
+        return $this->last_name . ' ' . $this->first_name;
+    }
+
     /**
      * {@inheritdoc}
      */

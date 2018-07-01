@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use app\models\Employee;
+use app\models\Order;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Recruit */
@@ -12,9 +15,9 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'order_id')->textInput() ?>
+    <?= $form->field($model, 'order_id')->dropDownList(ArrayHelper::map(Order::find()->all(), 'id', 'id')) ?>
 
-    <?= $form->field($model, 'employee_id')->textInput() ?>
+    <?= $form->field($model, 'employee_id')->dropDownList(ArrayHelper::map(Employee::find()->all(), 'id', 'fullName')) ?>
 
     <?= $form->field($model, 'date')->textInput() ?>
 

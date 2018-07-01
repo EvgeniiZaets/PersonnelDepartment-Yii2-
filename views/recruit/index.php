@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\models\Recruit;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\forms\RecruitSearch */
@@ -28,6 +29,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'order_id',
             'employee_id',
+            [
+                'attribute' => 'employee_id',
+                'value' => function (Recruit $recruit) {
+                    return $recruit->employee->fullName;
+                },
+            ],
             'date',
 
             ['class' => 'yii\grid\ActionColumn'],
