@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\helpers\EmployeeHelper;
+use app\models\Employee;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Employee */
@@ -33,7 +35,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'last_name',
             'address',
             'email:email',
-            'status',
+            [
+                'attribute' => 'status',
+                'value' => function (Employee $employee) { // в качестве значения - название статуса
+                    return EmployeeHelper::getStatusName($employee->status);
+                }
+            ],
         ],
     ]) ?>
 
