@@ -20,6 +20,10 @@ use Yii;
  */
 class Interview extends \yii\db\ActiveRecord
 {
+    const STATUS_NEW = 1;
+    const STATUS_PASS = 2;
+    const STATUS_REJECT = 3;
+
     /**
      * {@inheritdoc}
      */
@@ -39,7 +43,6 @@ class Interview extends \yii\db\ActiveRecord
             [['status', 'employee_id'], 'integer'],
             [['reject_reason'], 'string'],
             [['first_name', 'last_name', 'email'], 'string', 'max' => 255],
-            [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::className(), 'targetAttribute' => ['employee_id' => 'id']],
         ];
     }
 

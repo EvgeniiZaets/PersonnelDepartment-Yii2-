@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Employee;
+use app\helpers\InterviewHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Interview */
@@ -22,7 +23,7 @@ use app\models\Employee;
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'status')->dropDownList(InterviewHelper::getStatusList()) ?>
 
     <?= $form->field($model, 'reject_reason')->textarea(['rows' => 6]) ?>
 
