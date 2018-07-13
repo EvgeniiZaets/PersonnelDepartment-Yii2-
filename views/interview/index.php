@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\models\Interview;
+use app\helpers\InterviewHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\forms\InterviewSearch */
@@ -29,7 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'first_name',
             'last_name',
             'email:email',
-            'status',
+            [
+                'attribute' => 'status',
+                'value' => function (Interview $interview) {
+                    return InterviewHelper::getStatusName($interview->status);
+                }
+            ],
             'reject_reason:ntext',
             'employee_id',
 
