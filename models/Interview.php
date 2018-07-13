@@ -27,6 +27,44 @@ class Interview extends \yii\db\ActiveRecord
     const STATUS_REJECT = 3;
 
     /**
+     * @param $insert - true когда insert, false когда update.
+     * @param $changedAttributes - значения старых атрибутов которые изменились.
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        // если статус изменился
+        if (in_array('status', array_keys($changedAttributes)) && $this->status != $changedAttributes['status']) {
+            if ($this->status == self::STATUS_NEW) {
+                if ($this->email) {
+                    Yii::$app->mailer->compose()
+                        ->setFrom(Yii::$app->params['adminEmail'])
+                        ->setTo($this->email)
+                        ->setSubject('You are joined to interview!')
+                        ->send();
+                }
+            } elseif ($this->status == self::STATUS_PASS) {
+                if ($this->email) {
+                    Yii::$app->mailer->compose()
+                        ->setFrom(Yii::$app->params['adminEmail'])
+                        ->setTo($this->email)
+                        ->setSubject('You are passed an interview!')
+                        ->send();
+                }
+
+            } elseif ($this->status == self::STATUS_REJECT) {
+                if ($this->email) {
+                    Yii::$app->mailer->compose()
+                        ->setFrom(Yii::$app->params['adminEmail'])
+                        ->setTo($this->email)
+                        ->setSubject('You are failed an interview')
+                        ->send();
+                }
+
+            }
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
