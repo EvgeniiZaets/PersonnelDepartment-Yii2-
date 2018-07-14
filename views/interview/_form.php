@@ -26,7 +26,7 @@ use app\helpers\InterviewHelper;
 
     <?php if ($model->getScenario() != Interview::SCENARIO_CREATE): ?>
 
-        <?= $form->field($model, 'status')->dropDownList(InterviewHelper::getStatusList()) ?>
+        <?= $form->field($model, 'status')->dropDownList($model->getNextStatusList()) ?>
 
         <?= $form->field($model, 'reject_reason')->textarea(['rows' => 6]) ?>
 

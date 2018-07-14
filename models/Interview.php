@@ -26,6 +26,26 @@ class Interview extends \yii\db\ActiveRecord
     const STATUS_PASS = 2;
     const STATUS_REJECT = 3;
 
+    public function getNextStatusList()
+    {
+        if ($this->status == self::STATUS_PASS) {
+            return [
+                self::STATUS_PASS => 'Passed'
+            ];
+        } elseif ($this->status == self::STATUS_REJECT) {
+            return [
+                self::STATUS_PASS => 'Passed',
+                self::STATUS_REJECT => 'Rejected'
+            ];
+        } else {
+            return [
+                self::STATUS_NEW => 'New',
+                self::STATUS_REJECT => 'Rejected',
+                self::STATUS_PASS => 'Passed'
+            ];
+        }
+    }
+
     /**
      * @param $insert - true когда insert, false когда update.
      * @param $changedAttributes - значения старых атрибутов которые изменились.
@@ -42,6 +62,9 @@ class Interview extends \yii\db\ActiveRecord
                         ->setSubject('You are joined to interview!')
                         ->send();
                 }
+                $log = new Log();
+                $log->message = $this->last_name . ' ' . $this->first_name . ' is joined to interview';
+                $log->save();
             } elseif ($this->status == self::STATUS_PASS) {
                 if ($this->email) {
                     Yii::$app->mailer->compose()
@@ -50,7 +73,9 @@ class Interview extends \yii\db\ActiveRecord
                         ->setSubject('You are passed an interview!')
                         ->send();
                 }
-
+                $log = new Log();
+                $log->message = $this->last_name . ' ' . $this->first_name . ' is passed an interview';
+                $log->save();
             } elseif ($this->status == self::STATUS_REJECT) {
                 if ($this->email) {
                     Yii::$app->mailer->compose()
@@ -59,9 +84,13 @@ class Interview extends \yii\db\ActiveRecord
                         ->setSubject('You are failed an interview')
                         ->send();
                 }
-
+                $log = new Log();
+                $log->message = $this->last_name . ' ' . $this->first_name . ' is failed an interview';
+                $log->save();
             }
         }
+
+        parent::afterSave($insert, $changedAttributes);
     }
 
     /**
