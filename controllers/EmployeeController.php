@@ -78,13 +78,16 @@ class EmployeeController extends Controller
             $interview = null;
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 if ($interview) {
                     $interview->status = Interview::STATUS_PASS;
                     $interview->save();
                 }
+                $model->save(false);
+                $transaction->commit();
+                Yii::$app->session->setFlash('success', 'Employee is recruit.');
                 return $this->redirect(['view', 'id' => $model->id]);
             } catch (\Exception $e) {
                 $transaction->rollBack();
