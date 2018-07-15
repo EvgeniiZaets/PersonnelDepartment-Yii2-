@@ -28,9 +28,56 @@ class Employee extends \yii\db\ActiveRecord
     const STATUS_VACATION = 3;
     const STATUS_DISMISS = 4;
 
+    public $order_date;
+    public $contract_date;
+    public $recruit_date;
+
     public function getFullName()
     {
         return $this->last_name . ' ' . $this->first_name;
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        // если статус изменился
+        if (in_array('status', array_keys($changedAttributes)) && $this->status != $changedAttributes['status']) {
+            if ($this->status == self::STATUS_PROBATION) {
+                if ($this->email) {
+                    Yii::$app->mailer->compose()
+                        ->setFrom(Yii::$app->params['adminEmail'])
+                        ->setTo($this->email)
+                        ->setSubject('You are recruit on probation!')
+                        ->send();
+                    $log = new Log();
+                    $log->message = $this->last_name . ' ' . $this->first_name . ' is recruit on probation';
+                    $log->save();
+                }
+            } elseif ($this->status == self::STATUS_WORK) {
+                if ($this->email) {
+                    Yii::$app->mailer->compose()
+                        ->setFrom(Yii::$app->params['adminEmail'])
+                        ->setTo($this->email)
+                        ->setSubject('You are recruit!')
+                        ->send();
+                    $log = new Log();
+                    $log->message = $this->last_name . ' ' . $this->first_name . ' is recruit';
+                    $log->save();
+                }
+            } elseif ($this->status == self::STATUS_DISMISS) {
+                if ($this->email) {
+                    Yii::$app->mailer->compose()
+                        ->setFrom(Yii::$app->params['adminEmail'])
+                        ->setTo($this->email)
+                        ->setSubject('You are dismissed')
+                        ->send();
+                    $log = new Log();
+                    $log->message = $this->last_name . ' ' . $this->first_name . ' is dismissed ';
+                    $log->save();
+                }
+            }
+        }
+
+        parent::afterSave($insert, $changedAttributes);
     }
 
     /**
