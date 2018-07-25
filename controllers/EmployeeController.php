@@ -8,7 +8,7 @@ use app\models\Order;
 use app\models\Recruit;
 use Yii;
 use app\models\Employee;
-use app\forms\EmployeeSearch;
+use app\forms\search\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

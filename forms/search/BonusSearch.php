@@ -1,16 +1,16 @@
 <?php
 
-namespace app\forms;
+namespace app\forms\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Dismiss;
+use app\models\Bonus;
 
 /**
- * DismissSearch represents the model behind the search form of `app\models\Dismiss`.
+ * BonusSearch represents the model behind the search form of `app\models\Bonus`.
  */
-class DismissSearch extends Dismiss
+class BonusSearch extends Bonus
 {
     /**
      * {@inheritdoc}
@@ -18,8 +18,7 @@ class DismissSearch extends Dismiss
     public function rules()
     {
         return [
-            [['id', 'order_id', 'employee_id'], 'integer'],
-            [['date', 'reason'], 'safe'],
+            [['id', 'order_id', 'employee_id', 'cost'], 'integer'],
         ];
     }
 
@@ -41,7 +40,7 @@ class DismissSearch extends Dismiss
      */
     public function search($params)
     {
-        $query = Dismiss::find();
+        $query = Bonus::find();
 
         // add conditions that should always apply here
 
@@ -62,10 +61,8 @@ class DismissSearch extends Dismiss
             'id' => $this->id,
             'order_id' => $this->order_id,
             'employee_id' => $this->employee_id,
-            'date' => $this->date,
+            'cost' => $this->cost,
         ]);
-
-        $query->andFilterWhere(['like', 'reason', $this->reason]);
 
         return $dataProvider;
     }

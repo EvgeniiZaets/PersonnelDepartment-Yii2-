@@ -5,7 +5,7 @@ use yii\grid\GridView;
 use app\models\Recruit;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\forms\RecruitSearch */
+/* @var $searchModel app\forms\search\RecruitSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Recruits';

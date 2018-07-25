@@ -6,7 +6,7 @@ use app\models\Interview;
 use app\helpers\InterviewHelper;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\forms\InterviewSearch */
+/* @var $searchModel app\forms\search\InterviewSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Interviews';

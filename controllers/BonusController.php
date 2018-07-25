@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Bonus;
-use app\forms\BonusSearch;
+use app\forms\search\BonusSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

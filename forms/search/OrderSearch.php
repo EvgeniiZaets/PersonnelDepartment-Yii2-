@@ -1,6 +1,6 @@
 <?php
 
-namespace app\forms;
+namespace app\forms\search;
 
 use Yii;
 use yii\base\Model;

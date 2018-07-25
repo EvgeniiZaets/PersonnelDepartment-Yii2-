@@ -1,16 +1,16 @@
 <?php
 
-namespace app\forms;
+namespace app\forms\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Position;
+use app\models\Dismiss;
 
 /**
- * PositionSearch represents the model behind the search form of `app\models\Position`.
+ * DismissSearch represents the model behind the search form of `app\models\Dismiss`.
  */
-class PositionSearch extends Position
+class DismissSearch extends Dismiss
 {
     /**
      * {@inheritdoc}
@@ -18,8 +18,8 @@ class PositionSearch extends Position
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['name'], 'safe'],
+            [['id', 'order_id', 'employee_id'], 'integer'],
+            [['date', 'reason'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class PositionSearch extends Position
      */
     public function search($params)
     {
-        $query = Position::find();
+        $query = Dismiss::find();
 
         // add conditions that should always apply here
 
@@ -60,9 +60,12 @@ class PositionSearch extends Position
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'order_id' => $this->order_id,
+            'employee_id' => $this->employee_id,
+            'date' => $this->date,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'reason', $this->reason]);
 
         return $dataProvider;
     }

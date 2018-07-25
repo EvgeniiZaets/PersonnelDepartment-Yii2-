@@ -6,7 +6,7 @@ use app\helpers\EmployeeHelper;
 use app\models\Employee;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\forms\EmployeeSearch */
+/* @var $searchModel app\forms\search\EmployeeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Employees';

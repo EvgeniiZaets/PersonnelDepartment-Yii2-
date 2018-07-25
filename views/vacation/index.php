@@ -5,7 +5,7 @@ use yii\grid\GridView;
 use app\models\Vacation;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\forms\VacationSearch */
+/* @var $searchModel app\forms\search\VacationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Vacations';

@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Recruit;
-use app\forms\RecruitSearch;
+use app\forms\search\RecruitSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

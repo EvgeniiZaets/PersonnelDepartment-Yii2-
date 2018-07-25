@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Assignment;
-use app\forms\AssignmentSearch;
+use app\forms\search\AssignmentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
