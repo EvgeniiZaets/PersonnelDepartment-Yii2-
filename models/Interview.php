@@ -55,16 +55,7 @@ class Interview extends \yii\db\ActiveRecord
         // если статус изменился
         if (in_array('status', array_keys($changedAttributes)) && $this->status != $changedAttributes['status']) {
             if ($this->status == self::STATUS_NEW) {
-                if ($this->email) {
-                    Yii::$app->mailer->compose()
-                        ->setFrom(Yii::$app->params['adminEmail'])
-                        ->setTo($this->email)
-                        ->setSubject('You are joined to interview!')
-                        ->send();
-                }
-                $log = new Log();
-                $log->message = $this->last_name . ' ' . $this->first_name . ' is joined to interview';
-                $log->save();
+
             } elseif ($this->status == self::STATUS_PASS) {
                 if ($this->email) {
                     Yii::$app->mailer->compose()
@@ -103,6 +94,7 @@ class Interview extends \yii\db\ActiveRecord
 
     /**
      * {@inheritdoc}
+     * TODO::эти правила нам не пригодятся т.к. есть отдельная модель для валидации формы. (InterviewJoinForm)
      */
     public function rules()
     {
