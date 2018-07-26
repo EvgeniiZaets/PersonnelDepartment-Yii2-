@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\forms\InterviewEditForm;
 use app\forms\InterviewJoinForm;
+use app\forms\InterviewRejectForm;
 use app\services\StaffService;
 use Yii;
 use app\models\Interview;
@@ -91,16 +93,49 @@ class InterviewController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $interview = $this->findModel($id);
+        $form = new InterviewEditForm($interview);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $service = new StaffService();
+            $service->editInterview(
+                $interview->id,
+                $form->lastName,
+                $form->firstName,
+                $form->email
+            );
+
+            return $this->redirect(['view', 'id' => $interview->id]);
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'editForm' => $form,
+            'model' => $interview
         ]);
     }
+
+    public function actionReject($id)
+    {
+        $interview = $this->findModel($id);
+        $form = new InterviewRejectForm();
+
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $service = new StaffService();
+            $service->rejectInterview(
+                $interview->id,
+                $form->reason
+            );
+
+            return $this->redirect(['view', 'id' => $interview->id]);
+        }
+
+        return $this->render('reject', [
+            'rejectForm' => $form,
+            'model' => $interview
+        ]);
+    }
+
+
 
     /**
      * Deletes an existing Interview model.

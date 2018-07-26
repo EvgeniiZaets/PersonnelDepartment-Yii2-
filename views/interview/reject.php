@@ -5,12 +5,12 @@ use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Interview */
-/* @var $editForm app\forms\InterviewEditForm */
+/* @var $rejectForm app\forms\InterviewRejectForm */
 
-$this->title = 'Update Interview: ' . $model->id;
+$this->title = 'Reject Interview: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Interviews', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = 'Reject';
 ?>
 <div class="interview-update">
 
@@ -18,11 +18,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($editForm, 'first_name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($editForm, 'last_name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($editForm, 'email')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($rejectForm, 'reason')->textarea(['rows' => 5]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

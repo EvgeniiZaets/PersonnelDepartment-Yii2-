@@ -6,6 +6,7 @@ use Yii;
 
 /**
  * This is the model class for table "{{%interview}}".
+ * ХРАНИТ ЛОГИКУ ПО ОБРАБОТКЕ ДЕЙСТВИЙ С САМИМ ИНТЕРВЬЮ.
  *
  * @property int $id
  * @property string $date
@@ -20,8 +21,6 @@ use Yii;
  */
 class Interview extends \yii\db\ActiveRecord
 {
-    const SCENARIO_CREATE = 'create';
-
     const STATUS_NEW = 1;
     const STATUS_PASS = 2;
     const STATUS_REJECT = 3;
@@ -46,6 +45,31 @@ class Interview extends \yii\db\ActiveRecord
         }
     }
 
+    public static function join($lastName, $firstName, $email, $date)
+    {
+        $interview = new Interview();
+        $interview->date = $date;
+        $interview->last_name = $lastName;
+        $interview->first_name = $firstName;
+        $interview->email = $email;
+        $interview->status = Interview::STATUS_NEW;
+        return $interview;
+    }
+
+    public function editData($lastName, $firstName, $email)
+    {
+        $this->last_name = $lastName;
+        $this->first_name = $firstName;
+        $this->email = $email;
+    }
+
+    public function reject($reason)
+    {
+        $this->guardIsNotRejected();
+        $this->reject_reason = $reason;
+        $this->status = self::STATUS_REJECT;
+    }
+
     /**
      * @param $insert - true когда insert, false когда update.
      * @param $changedAttributes - значения старых атрибутов которые изменились.
@@ -54,9 +78,7 @@ class Interview extends \yii\db\ActiveRecord
     {
         // если статус изменился
         if (in_array('status', array_keys($changedAttributes)) && $this->status != $changedAttributes['status']) {
-            if ($this->status == self::STATUS_NEW) {
-
-            } elseif ($this->status == self::STATUS_PASS) {
+            if ($this->status == self::STATUS_PASS) {
                 if ($this->email) {
                     Yii::$app->mailer->compose()
                         ->setFrom(Yii::$app->params['adminEmail'])
@@ -66,17 +88,6 @@ class Interview extends \yii\db\ActiveRecord
                 }
                 $log = new Log();
                 $log->message = $this->last_name . ' ' . $this->first_name . ' is passed an interview';
-                $log->save();
-            } elseif ($this->status == self::STATUS_REJECT) {
-                if ($this->email) {
-                    Yii::$app->mailer->compose()
-                        ->setFrom(Yii::$app->params['adminEmail'])
-                        ->setTo($this->email)
-                        ->setSubject('You are failed an interview')
-                        ->send();
-                }
-                $log = new Log();
-                $log->message = $this->last_name . ' ' . $this->first_name . ' is failed an interview';
                 $log->save();
             }
         }
@@ -90,30 +101,6 @@ class Interview extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return '{{%interview}}';
-    }
-
-    /**
-     * {@inheritdoc}
-     * TODO::эти правила нам не пригодятся т.к. есть отдельная модель для валидации формы. (InterviewJoinForm)
-     */
-    public function rules()
-    {
-        return [
-            [['date', 'first_name', 'last_name'], 'required'],
-            [['status'], 'required', 'except' => self::SCENARIO_CREATE],
-            [['status'], 'default', 'value' => self::STATUS_NEW], // если status не был передан из формаы, ставим STATUS_NEW.
-            [['date'], 'safe'],
-            // Условие на сервере и на клиенте, при котором обязательно для заполнения reject_reason.
-            [['reject_reason'], 'required', 'when' => function (self $model) {
-                    return $model->status == self::STATUS_REJECT;
-                }, 'whenClient' => "function (attribute, value) {
-                    return $('#interview-status').val() == '" . self::STATUS_REJECT . "';
-                }"
-            ],
-            [['status', 'employee_id'], 'integer', 'except' => self::SCENARIO_CREATE],
-            [['reject_reason'], 'string'],
-            [['first_name', 'last_name', 'email'], 'string', 'max' => 255],
-        ];
     }
 
     /**
@@ -139,5 +126,11 @@ class Interview extends \yii\db\ActiveRecord
     public function getEmployee()
     {
         return $this->hasOne(Employee::className(), ['id' => 'employee_id']);
+    }
+
+    private function guardIsNotRejected()
+    {
+        if ($this->status == self::STATUS_REJECT)
+            throw new \DomainException('Interview is already rejected');
     }
 }
