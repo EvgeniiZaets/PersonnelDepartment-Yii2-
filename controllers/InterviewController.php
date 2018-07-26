@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\forms\InterviewEditForm;
 use app\forms\InterviewJoinForm;
 use app\forms\InterviewRejectForm;
+use app\forms\InterviewMoveForm;
 use app\services\StaffService;
 use Yii;
 use app\models\Interview;
@@ -18,6 +19,17 @@ use yii\filters\VerbFilter;
  */
 class InterviewController extends Controller
 {
+    private $staffService;
+
+    // Контроллер создастся через Yii::createObject(), и он через контейнер
+    // спарсит конструктор и автоматически создаст экземпляр StaffService.
+    // Потом по цепочке парсит конструктор StaffService и создаст экземпляры всех классов которые туда переданы.
+    public function __construct($id, $module, StaffService $staffService, array $config = [])
+    {
+        $this->staffService = $staffService;
+        parent::__construct($id, $module, $config);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -66,10 +78,7 @@ class InterviewController extends Controller
         $form = new InterviewJoinForm();
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-
-            $service = new StaffService();
-
-            $model = $service->joinToInterview(
+            $model = $this->staffService->joinToInterview(
                 $form->lastName,
                 $form->firstName,
                 $form->email,
@@ -97,8 +106,7 @@ class InterviewController extends Controller
         $form = new InterviewEditForm($interview);
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            $service = new StaffService();
-            $service->editInterview(
+            $this->staffService->editInterview(
                 $interview->id,
                 $form->lastName,
                 $form->firstName,
@@ -114,14 +122,29 @@ class InterviewController extends Controller
         ]);
     }
 
+    public function actionMove($id)
+    {
+        $interview = $this->findModel($id);
+        $form = new InterviewMoveForm($interview);
+
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $this->staffService->moveInterview($interview->id, $form->date);
+            return $this->redirect(['view', 'id' => $interview->id]);
+        } else {
+            return $this->render('move', [
+                'moveForm' => $form,
+                'model' => $interview,
+            ]);
+        }
+    }
+
     public function actionReject($id)
     {
         $interview = $this->findModel($id);
         $form = new InterviewRejectForm();
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            $service = new StaffService();
-            $service->rejectInterview(
+            $this->staffService->rejectInterview(
                 $interview->id,
                 $form->reason
             );
@@ -135,18 +158,13 @@ class InterviewController extends Controller
         ]);
     }
 
-
-
-    /**
-     * Deletes an existing Interview model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $interview = $this->findModel($id);
+        // !!! Передаем id, а не Interview, потому что на фронтенде мы можем создать AR-модели для отображения
+        // а классы которые мы используем здесь могут не совпадать с классами с которыми мы работем здесь.
+        // Также можно передать массив $interview['id'] и тд
+        $this->staffService->deleteInterview($interview->id);
 
         return $this->redirect(['index']);
     }

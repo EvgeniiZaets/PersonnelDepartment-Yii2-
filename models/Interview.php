@@ -63,11 +63,24 @@ class Interview extends \yii\db\ActiveRecord
         $this->email = $email;
     }
 
+    public function move($date)
+    {
+        $this->guardIsNew();
+        $this->guardNotCurrentDate($date);
+        $this->date = $date;
+    }
+
     public function reject($reason)
     {
         $this->guardIsNotRejected();
         $this->reject_reason = $reason;
         $this->status = self::STATUS_REJECT;
+    }
+
+    public function remove()
+    {
+//        $this->guardIsNew();
+//        $this->status = self::SATATUS_DELETED;
     }
 
     /**
@@ -132,5 +145,17 @@ class Interview extends \yii\db\ActiveRecord
     {
         if ($this->status == self::STATUS_REJECT)
             throw new \DomainException('Interview is already rejected');
+    }
+
+    private function guardIsNew()
+    {
+        if ($this->status != self::STATUS_NEW)
+            throw new \DomainException('Interview is new');
+    }
+
+    private function guardNotCurrentDate($date)
+    {
+        if ($date != $this->date)
+            throw new \DomainException('Date is current.');
     }
 }
