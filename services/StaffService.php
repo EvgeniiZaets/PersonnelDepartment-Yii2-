@@ -3,7 +3,7 @@
 namespace app\services;
 
 use app\models\Interview;
-use app\repositories\InterviewRepository;
+use app\repositories\InterviewRepositoryInterface;
 
 class  StaffService
 {
@@ -11,7 +11,7 @@ class  StaffService
     private $logger;
     private $notifier;
 
-    public function __construct(InterviewRepository $interviewRepository, LoggerInterface $logger, NotifierInterface $notifier)
+    public function __construct(InterviewRepositoryInterface $interviewRepository, LoggerInterface $logger, NotifierInterface $notifier)
     {
         $this->interviewRepository = $interviewRepository;
         $this->logger = $logger;

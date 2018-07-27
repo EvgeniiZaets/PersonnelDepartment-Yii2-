@@ -2,11 +2,10 @@
 
 namespace app\repositories;
 
-use app\forms\InterviewMoveForm;
 use app\repositories\exceptions\NotFoundException;
 use app\models\Interview;
 
-class InterviewRepository
+class InterviewRepository implements InterviewRepositoryInterface
 {
     /**
      * @param $id
