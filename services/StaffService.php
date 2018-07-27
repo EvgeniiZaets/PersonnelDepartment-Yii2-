@@ -4,16 +4,18 @@ namespace app\services;
 
 use app\models\Interview;
 use app\repositories\InterviewRepository;
-use Yii;
-use app\models\Log;
 
 class  StaffService
 {
     private $interviewRepository;
+    private $logger;
+    private $notifier;
 
-    public function __construct(InterviewRepository $interviewRepository)
+    public function __construct(InterviewRepository $interviewRepository, LoggerInterface $logger, NotifierInterface $notifier)
     {
         $this->interviewRepository = $interviewRepository;
+        $this->logger = $logger;
+        $this->notifier = $notifier;
     }
 
     public function joinToInterview($lastName, $firstName, $email, $date)
@@ -24,8 +26,8 @@ class  StaffService
         $interview = Interview::join($lastName, $firstName, $email, $date);
         $this->interviewRepository->add($interview);
 
-        $this->notify($interview->email, 'You are joined to interview!');
-        $this->log($interview->last_name . ' ' . $interview->first_name . ' is joined to interview');
+        $this->notifier->notify($interview->email, 'You are joined to interview!');
+        $this->logger->log($interview->last_name . ' ' . $interview->first_name . ' is joined to interview');
 
         return $interview;
     }
@@ -36,7 +38,7 @@ class  StaffService
         $interview->editData($lastName, $firstName, $email);
         $this->interviewRepository->save($interview);
 
-        $this->log('Interview' . $interview->id . ' is updated');
+        $this->logger->log('Interview' . $interview->id . ' is updated');
     }
 
     public function moveInterview($id, $date)
@@ -45,8 +47,8 @@ class  StaffService
         $interview->move($date);
         $this->interviewRepository->save($interview);
 
-        $this->notify($interview->email, 'You interview is moved');
-        $this->log('Interview ' . $interview->id . ' is move on ' . $interview->date);
+        $this->notifier->notify($interview->email, 'You interview is moved');
+        $this->logger->log('Interview ' . $interview->id . ' is move on ' . $interview->date);
     }
 
     public function rejectInterview($id, $reason)
@@ -55,8 +57,8 @@ class  StaffService
         $interview->reject($reason);
         $this->interviewRepository->save($interview);
 
-        $this->notify($interview->email, 'You are failed an interview');
-        $this->log($interview->last_name . ' ' . $interview->first_name . ' is failed an interview');
+        $this->notifier->notify($interview->email, 'You are failed an interview');
+        $this->logger->log($interview->last_name . ' ' . $interview->first_name . ' is failed an interview');
     }
 
     public function deleteInterview($id)
@@ -65,24 +67,6 @@ class  StaffService
         $interview->remove(); // Сюда можно вставить логику, которая должна произойти при удалении.
         $this->interviewRepository->delete($interview);
 
-        $this->log('Interview ' . $interview->id . ' is removed');
-    }
-
-    private function log($message)
-    {
-        $log = new Log();
-        $log->message = $message;
-        $log->save();
-    }
-
-    private function notify($email, $message)
-    {
-        if ($email) {
-                Yii::$app->mailer->compose()
-                    ->setFrom(Yii::$app->params['adminEmail'])
-                    ->setTo($email)
-                    ->setSubject($message)
-                    ->send();
-        }
+        $this->logger->log('Interview ' . $interview->id . ' is removed');
     }
 }
