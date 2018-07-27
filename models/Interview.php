@@ -83,6 +83,21 @@ class Interview extends \yii\db\ActiveRecord
 //        $this->status = self::SATATUS_DELETED;
     }
 
+    public function isNew()
+    {
+        return $this->status === Interview::STATUS_NEW;
+    }
+
+    public function isPassed()
+    {
+        return $this->status === Interview::STATUS_PASS;
+    }
+
+    public function isRejected()
+    {
+        return $this->status === Interview::STATUS_REJECT;
+    }
+
     /**
      * @param $insert - true когда insert, false когда update.
      * @param $changedAttributes - значения старых атрибутов которые изменились.
@@ -143,13 +158,13 @@ class Interview extends \yii\db\ActiveRecord
 
     private function guardIsNotRejected()
     {
-        if ($this->status == self::STATUS_REJECT)
+        if ($this->isRejected())
             throw new \DomainException('Interview is already rejected');
     }
 
     private function guardIsNew()
     {
-        if ($this->status != self::STATUS_NEW)
+        if (!$this->isNew())
             throw new \DomainException('Interview is new');
     }
 
