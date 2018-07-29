@@ -3,7 +3,7 @@ namespace app\dispatchers;
 
 use app\events\Event;
 
-class SimpleEventDispatcher
+class SimpleEventDispatcher implements EventDispatcherInterface
 {
     private $listeners = []; // содержит обработчики событий
     public function __construct(array $listeners)

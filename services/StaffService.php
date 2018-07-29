@@ -11,17 +11,14 @@ class  StaffService
 {
     private $interviewRepository;
     private $eventDispatcher;
-    private $logger;
 
     public function __construct(
         InterviewRepositoryInterface $interviewRepository,
-        EventDispatcherInterface $eventDispatcher,
-        LoggerInterface $logger
+        EventDispatcherInterface $eventDispatcher
     )
     {
         $this->interviewRepository = $interviewRepository;
         $this->eventDispatcher = $eventDispatcher;
-        $this->logger = $logger;
     }
 
     public function joinToInterview($lastName, $firstName, $email, $date)
@@ -36,8 +33,6 @@ class  StaffService
         // и вызовет каждый, передаваю туда InterviewJoinEvent.
         $this->eventDispatcher->dispatch(new InterviewJoinEvent($interview));
 
-        $this->logger->log($interview->last_name . ' ' . $interview->first_name . ' is joined to interview');
-
         return $interview;
     }
 
@@ -46,8 +41,6 @@ class  StaffService
         $interview = $this->interviewRepository->find($id);
         $interview->editData($lastName, $firstName, $email);
         $this->interviewRepository->save($interview);
-
-        $this->logger->log('Interview' . $interview->id . ' is updated');
     }
 
     public function moveInterview($id, $date)
@@ -55,8 +48,6 @@ class  StaffService
         $interview = $this->interviewRepository->find($id);
         $interview->move($date);
         $this->interviewRepository->save($interview);
-
-        $this->logger->log('Interview ' . $interview->id . ' is move on ' . $interview->date);
     }
 
     public function rejectInterview($id, $reason)
@@ -64,8 +55,6 @@ class  StaffService
         $interview = $this->interviewRepository->find($id);
         $interview->reject($reason);
         $this->interviewRepository->save($interview);
-
-        $this->logger->log($interview->last_name . ' ' . $interview->first_name . ' is failed an interview');
     }
 
     public function deleteInterview($id)
@@ -73,7 +62,5 @@ class  StaffService
         $interview = $this->interviewRepository->find($id);
         $interview->remove(); // Сюда можно вставить логику, которая должна произойти при удалении.
         $this->interviewRepository->delete($interview);
-
-        $this->logger->log('Interview ' . $interview->id . ' is removed');
     }
 }
