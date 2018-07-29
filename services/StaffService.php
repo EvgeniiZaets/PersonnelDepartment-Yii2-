@@ -4,18 +4,24 @@ namespace app\services;
 
 use app\models\Interview;
 use app\repositories\InterviewRepositoryInterface;
+use app\dispatchers\EventDispatcherInterface;
+use app\events\interview\InterviewJoinEvent;
 
 class  StaffService
 {
     private $interviewRepository;
+    private $eventDispatcher;
     private $logger;
-    private $notifier;
 
-    public function __construct(InterviewRepositoryInterface $interviewRepository, LoggerInterface $logger, NotifierInterface $notifier)
+    public function __construct(
+        InterviewRepositoryInterface $interviewRepository,
+        EventDispatcherInterface $eventDispatcher,
+        LoggerInterface $logger
+    )
     {
         $this->interviewRepository = $interviewRepository;
+        $this->eventDispatcher = $eventDispatcher;
         $this->logger = $logger;
-        $this->notifier = $notifier;
     }
 
     public function joinToInterview($lastName, $firstName, $email, $date)
@@ -25,8 +31,11 @@ class  StaffService
         // 2. может быть несколько способов создания одного и того же обьекта, тогда одного конструктора не хватит.
         $interview = Interview::join($lastName, $firstName, $email, $date);
         $this->interviewRepository->add($interview);
+        // При вызове dispatch(), диспетчер автоматически по имени класса
+        // циклом пройдет по всем привязанным к этому событию обработчикам
+        // и вызовет каждый, передаваю туда InterviewJoinEvent.
+        $this->eventDispatcher->dispatch(new InterviewJoinEvent($interview));
 
-        $this->notifier->notify($interview->email, 'You are joined to interview!');
         $this->logger->log($interview->last_name . ' ' . $interview->first_name . ' is joined to interview');
 
         return $interview;
@@ -47,7 +56,6 @@ class  StaffService
         $interview->move($date);
         $this->interviewRepository->save($interview);
 
-        $this->notifier->notify($interview->email, 'You interview is moved');
         $this->logger->log('Interview ' . $interview->id . ' is move on ' . $interview->date);
     }
 
@@ -57,7 +65,6 @@ class  StaffService
         $interview->reject($reason);
         $this->interviewRepository->save($interview);
 
-        $this->notifier->notify($interview->email, 'You are failed an interview');
         $this->logger->log($interview->last_name . ' ' . $interview->first_name . ' is failed an interview');
     }
 
