@@ -93,13 +93,23 @@ class EmployeeController extends Controller
         ]);
     }
 
-    //TODO::сделать создание.
-//    public function actionCreateByInterview($interview_id)
-//    {
-//        $interview = $this->findInterviewModel($interview_id);
-//        $form = new EmployeeCreateForm($interview);
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+    public function actionCreateByInterview($interview_id)
+    {
+        $interview = $this->findInterviewModel($interview_id);
+        $form = new EmployeeCreateForm($interview);
+
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $employee = $this->staffService->createEmployeeByInterview(
+                $interview->id,
+                new RecruitData($form->firstName, $form->lastName, $form->address, $form->email),
+                $form->orderDate,
+                $form->contractDate,
+                $form->recruitDate
+            );
+            Yii::$app->session->setFlash('success', 'Employee is recruit.');
+            return $this->redirect(['view', 'id' => $employee->id]);
+
+            /////////////TODO:delete
 //            $transaction = Yii::$app->db->beginTransaction();
 //            try {
 //                if ($interview) {
@@ -133,12 +143,13 @@ class EmployeeController extends Controller
 //                $transaction->rollBack();
 //                throw new ServerErrorHttpException($e->getMessage());
 //            }
-//        }
-//
-//        return $this->render('create', [
-//            'model' => $model,
-//        ]);
-//    }
+            ///////////
+        }
+
+        return $this->render('create', [
+            'createForm' => $form,
+        ]);
+    }
 
     /**
      * Updates an existing Employee model.
