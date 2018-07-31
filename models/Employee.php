@@ -37,6 +37,17 @@ class Employee extends \yii\db\ActiveRecord
         return $this->last_name . ' ' . $this->first_name;
     }
 
+    public static function create($firstName, $lastName, $address, $email)
+    {
+        $employee = new self;
+        $employee->first_name = $firstName;
+        $employee->last_name = $lastName;
+        $employee->address = $address;
+        $employee->email = $email;
+        $employee->status = self::STATUS_PROBATION;
+        return $employee;
+    }
+
     public function afterSave($insert, $changedAttributes)
     {
         // если статус изменился

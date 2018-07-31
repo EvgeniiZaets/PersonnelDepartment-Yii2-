@@ -17,6 +17,12 @@ use Yii;
  */
 class Contract extends \yii\db\ActiveRecord
 {
+    //TODO:do
+//    public static function create(Employee $employee, )
+//    {
+//
+//    }
+
     /**
      * {@inheritdoc}
      */

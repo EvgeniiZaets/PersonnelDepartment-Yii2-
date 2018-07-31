@@ -2,22 +2,41 @@
 
 namespace app\services;
 
+use app\models\Contract;
+use app\models\Employee;
 use app\models\Interview;
+use app\repositories\ContractRepositoryInterface;
+use app\repositories\EmployeeRepositoryInterface;
 use app\repositories\InterviewRepositoryInterface;
 use app\dispatchers\EventDispatcherInterface;
 use app\events\interview\InterviewJoinEvent;
+use app\repositories\PositionRepositoryInterface;
+use app\repositories\RecruitRepositoryInterface;
+use app\services\dto\RecruitData;
 
 class  StaffService
 {
+    private $contractRepository;
+    private $employeeRepository;
     private $interviewRepository;
+    private $positionRepository;
+    private $recruitRepository;
     private $eventDispatcher;
 
     public function __construct(
+        ContractRepositoryInterface $contractRepository,
+        EmployeeRepositoryInterface $employeeRepository,
         InterviewRepositoryInterface $interviewRepository,
+        PositionRepositoryInterface $positionRepository,
+        RecruitRepositoryInterface $recruitRepository,
         EventDispatcherInterface $eventDispatcher
     )
     {
+        $this->contractRepository = $contractRepository;
+        $this->employeeRepository = $employeeRepository;
         $this->interviewRepository = $interviewRepository;
+        $this->positionRepository = $positionRepository;
+        $this->recruitRepository = $recruitRepository;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -62,5 +81,19 @@ class  StaffService
         $interview = $this->interviewRepository->find($id);
         $interview->remove(); // Сюда можно вставить логику, которая должна произойти при удалении.
         $this->interviewRepository->delete($interview);
+    }
+
+    public function createEmployee(RecruitData $recruitData, $orderDate, $contractDate, $recruitDate)
+    {
+        // Заполняем сотрудника данными. (что бы не заполнять снаружи)
+        $employee = Employee::create(
+            $recruitData->firstName,
+            $recruitData->lastName,
+            $recruitData->address,
+            $recruitData->email
+        );
+
+        // TODO:do
+//        $contract = Contract::create($employee, $recruitData->lastName, $recruitData->firstName, $contractDate);
     }
 }
