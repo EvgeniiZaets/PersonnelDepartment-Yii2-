@@ -25,26 +25,6 @@ class Interview extends \yii\db\ActiveRecord
     const STATUS_PASS = 2;
     const STATUS_REJECT = 3;
 
-    public function getNextStatusList()
-    {
-        if ($this->status == self::STATUS_PASS) {
-            return [
-                self::STATUS_PASS => 'Passed'
-            ];
-        } elseif ($this->status == self::STATUS_REJECT) {
-            return [
-                self::STATUS_PASS => 'Passed',
-                self::STATUS_REJECT => 'Rejected'
-            ];
-        } else {
-            return [
-                self::STATUS_NEW => 'New',
-                self::STATUS_REJECT => 'Rejected',
-                self::STATUS_PASS => 'Passed'
-            ];
-        }
-    }
-
     public static function join($lastName, $firstName, $email, $date)
     {
         $interview = new Interview();
@@ -103,31 +83,6 @@ class Interview extends \yii\db\ActiveRecord
     public function isRejected()
     {
         return $this->status === Interview::STATUS_REJECT;
-    }
-
-    /**
-     * @param $insert - true когда insert, false когда update.
-     * @param $changedAttributes - значения старых атрибутов которые изменились.
-     */
-    public function afterSave($insert, $changedAttributes)
-    {
-        // если статус изменился
-        if (in_array('status', array_keys($changedAttributes)) && $this->status != $changedAttributes['status']) {
-            if ($this->status == self::STATUS_PASS) {
-                if ($this->email) {
-                    Yii::$app->mailer->compose()
-                        ->setFrom(Yii::$app->params['adminEmail'])
-                        ->setTo($this->email)
-                        ->setSubject('You are passed an interview!')
-                        ->send();
-                }
-                $log = new Log();
-                $log->message = $this->last_name . ' ' . $this->first_name . ' is passed an interview';
-                $log->save();
-            }
-        }
-
-        parent::afterSave($insert, $changedAttributes);
     }
 
     /**
