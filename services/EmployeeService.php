@@ -52,16 +52,11 @@ class  EmployeeService
         );
         $contract = Contract::create($employee, $recruitData->lastName, $recruitData->firstName, $contractDate);
         $recruit = Recruit::create($employee, Order::create($orderDate), $recruitDate);
-        $transaction = $this->transactionManager->begin();
-        try {
+        $this->transactionManager->execute(function () use ($employee, $contract, $recruit) {
             $this->employeeRepository->add($employee);
             $this->contractRepository->add($contract);
             $this->recruitRepository->add($recruit);
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollBack();
-            throw $e;
-        }
+        });
         $this->eventDispatcher->dispatch(new EmployeeRecruitEvent($employee));
         return $employee;
     }
@@ -78,17 +73,12 @@ class  EmployeeService
         $interview->passBy($employee);
         $contract = Contract::create($employee, $recruitData->lastName, $recruitData->firstName, $contractDate);
         $recruit = Recruit::create($employee, Order::create($orderDate), $recruitDate);
-        $transaction = $this->transactionManager->begin();
-        try {
+        $this->transactionManager->execute(function () use ($interview, $employee, $contract, $recruit) {
             $this->interviewRepository->save($interview);
             $this->employeeRepository->add($employee);
             $this->contractRepository->add($contract);
             $this->recruitRepository->add($recruit);
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollBack();
-            throw $e;
-        }
+        });
         $this->eventDispatcher->dispatch(new EmployeeRecruitByInterviewEvent($employee, $interview));
         return $employee;
     }

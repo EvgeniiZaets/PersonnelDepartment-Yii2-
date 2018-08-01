@@ -23,6 +23,7 @@ class InterviewService
 
     public function join($lastName, $firstName, $email, $date)
     {
+        $this->guardEmailIsUnique($email);
         // используем статический метод для создания обьекта, а не конструктор потому, что:
         // 1. мы испльзуем ActiveREcord, а он не будет работать с конструкторами.
         // 2. может быть несколько способов создания одного и того же обьекта, тогда одного конструктора не хватит.
@@ -62,5 +63,11 @@ class InterviewService
         $interview = $this->interviewRepository->find($id);
         $interview->remove(); // Сюда можно вставить логику, которая должна произойти при удалении.
         $this->interviewRepository->delete($interview);
+    }
+
+    private function guardEmailIsUnique($email)
+    {
+        if ($this->interviewRepository->existsByEmail($email))
+            throw new \DomainException('This email is already exists.');
     }
 }
