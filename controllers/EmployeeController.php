@@ -3,18 +3,14 @@
 namespace app\controllers;
 
 use app\forms\EmployeeCreateForm;
-use app\models\Contract;
 use app\models\Interview;
-use app\models\Order;
-use app\models\Recruit;
 use Yii;
 use app\models\Employee;
 use app\forms\search\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\ServerErrorHttpException;
-use app\services\StaffService;
+use app\services\EmployeeService;
 use app\services\dto\RecruitData;
 
 /**
@@ -22,11 +18,11 @@ use app\services\dto\RecruitData;
  */
 class EmployeeController extends Controller
 {
-    private $staffService;
+    private $employeeService;
 
-    public function __construct($id, $module, StaffService $staffService, array $config = [])
+    public function __construct($id, $module, EmployeeService $employeeService, array $config = [])
     {
-        $this->staffService = $staffService;
+        $this->employeeService = $employeeService;
         parent::__construct($id, $module, $config);
     }
 
@@ -78,7 +74,7 @@ class EmployeeController extends Controller
         $form = new EmployeeCreateForm();
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            $employee = $this->staffService->createEmployee(
+            $employee = $this->employeeService->create(
                 new RecruitData($form->firstName, $form->lastName, $form->address, $form->email),
                 $form->orderDate,
                 $form->contractDate,
@@ -99,7 +95,7 @@ class EmployeeController extends Controller
         $form = new EmployeeCreateForm($interview);
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            $employee = $this->staffService->createEmployeeByInterview(
+            $employee = $this->employeeService->createByInterview(
                 $interview->id,
                 new RecruitData($form->firstName, $form->lastName, $form->address, $form->email),
                 $form->orderDate,
