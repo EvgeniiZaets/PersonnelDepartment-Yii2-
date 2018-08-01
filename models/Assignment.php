@@ -22,6 +22,18 @@ use Yii;
  */
 class Assignment extends \yii\db\ActiveRecord
 {
+    public static function create(Order $order, Employee $employee, Position $position, $date, $rate, $salary)
+    {
+        $assignment = new self;
+        $assignment->populateRelation('order', $order);
+        $assignment->populateRelation('employee', $employee);
+        $assignment->populateRelation('position', $position);
+        $assignment->date = $date;
+        $assignment->rate = $rate;
+        $assignment->salary = $salary;
+        return $assignment;
+    }
+
     /**
      * {@inheritdoc}
      */

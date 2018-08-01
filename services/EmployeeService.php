@@ -2,16 +2,20 @@
 
 namespace app\services;
 
+use app\events\employee\EmployeeAssignEvent;
 use app\events\employee\EmployeeRecruitByInterviewEvent;
 use app\events\employee\EmployeeRecruitEvent;
+use app\models\Assignment;
 use app\models\Contract;
 use app\models\Employee;
 use app\models\Order;
 use app\models\Recruit;
+use app\repositories\AssignmentRepositoryInterface;
 use app\repositories\ContractRepositoryInterface;
 use app\repositories\EmployeeRepositoryInterface;
 use app\repositories\InterviewRepositoryInterface;
 use app\dispatchers\EventDispatcherInterface;
+use app\repositories\PositionRepositoryInterface;
 use app\repositories\RecruitRepositoryInterface;
 use app\services\dto\RecruitData;
 
@@ -21,6 +25,8 @@ class  EmployeeService
     private $employeeRepository;
     private $interviewRepository;
     private $recruitRepository;
+    private $positionRepository;
+    private $assignmentRepository;
     private $eventDispatcher;
     private $transactionManager;
 
@@ -29,6 +35,8 @@ class  EmployeeService
         EmployeeRepositoryInterface $employeeRepository,
         InterviewRepositoryInterface $interviewRepository,
         RecruitRepositoryInterface $recruitRepository,
+        PositionRepositoryInterface $positionRepository,
+        AssignmentRepositoryInterface $assignmentRepository,
         EventDispatcherInterface $eventDispatcher,
         TransactionManager $transactionManager
     )
@@ -37,6 +45,8 @@ class  EmployeeService
         $this->employeeRepository = $employeeRepository;
         $this->interviewRepository = $interviewRepository;
         $this->recruitRepository = $recruitRepository;
+        $this->positionRepository = $positionRepository;
+        $this->assignmentRepository = $assignmentRepository;
         $this->eventDispatcher = $eventDispatcher;
         $this->transactionManager = $transactionManager;
     }
@@ -81,5 +91,16 @@ class  EmployeeService
         });
         $this->eventDispatcher->dispatch(new EmployeeRecruitByInterviewEvent($employee, $interview));
         return $employee;
+    }
+
+    public function assignToPosition($employeeId, $positionId, $rate, $salary, $orderDate, $startDate)
+    {
+        $employee = $this->employeeRepository->find($employeeId);
+        $position = $this->positionRepository->find($positionId);
+
+        $assignment = Assignment::create(Order::create($orderDate), $employee, $position, $startDate, $rate, $salary);
+
+        $this->assignmentRepository->add($assignment);
+        $this->eventDispatcher->dispatch(new EmployeeAssignEvent($assignment));
     }
 }
