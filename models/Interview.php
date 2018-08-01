@@ -83,6 +83,13 @@ class Interview extends \yii\db\ActiveRecord
 //        $this->status = self::SATATUS_DELETED;
     }
 
+    public function passBy(Employee $employee)
+    {
+        $this->guardIsNotPassed();
+        $this->populateRelation('employee', $employee); // для заполнения employee_id
+        $this->status = self::STATUS_PASS;
+    }
+
     public function isNew()
     {
         return $this->status === Interview::STATUS_NEW;
@@ -160,6 +167,12 @@ class Interview extends \yii\db\ActiveRecord
     {
         if ($this->isRejected())
             throw new \DomainException('Interview is already rejected');
+    }
+
+    private function guardIsNotPassed()
+    {
+        if ($this->isPassed())
+            throw new \DomainException('Interview is already passed');
     }
 
     private function guardIsNew()

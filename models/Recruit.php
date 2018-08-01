@@ -17,6 +17,16 @@ use Yii;
  */
 class Recruit extends \yii\db\ActiveRecord
 {
+    public static function create(Employee $employee, Order $order, $date)
+    {
+        $recruit = new self;
+        // Вместо передачи id, присваиваем обьект по связи.
+        $recruit->populateRecord('employee', $employee);
+        $recruit->populateRecord('order', $order);
+        $recruit->date = $date;
+        return $recruit;
+    }
+
     /**
      * {@inheritdoc}
      */

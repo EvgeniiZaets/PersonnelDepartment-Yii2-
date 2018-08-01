@@ -2,9 +2,12 @@
 
 namespace app\services;
 
+use app\events\employee\EmployeeRecruitEvent;
 use app\models\Contract;
 use app\models\Employee;
 use app\models\Interview;
+use app\models\Order;
+use app\models\Recruit;
 use app\repositories\ContractRepositoryInterface;
 use app\repositories\EmployeeRepositoryInterface;
 use app\repositories\InterviewRepositoryInterface;
@@ -22,6 +25,7 @@ class  StaffService
     private $positionRepository;
     private $recruitRepository;
     private $eventDispatcher;
+    private $transactionManager;
 
     public function __construct(
         ContractRepositoryInterface $contractRepository,
@@ -29,7 +33,8 @@ class  StaffService
         InterviewRepositoryInterface $interviewRepository,
         PositionRepositoryInterface $positionRepository,
         RecruitRepositoryInterface $recruitRepository,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        TransactionManager $transactionManager
     )
     {
         $this->contractRepository = $contractRepository;
@@ -38,6 +43,7 @@ class  StaffService
         $this->positionRepository = $positionRepository;
         $this->recruitRepository = $recruitRepository;
         $this->eventDispatcher = $eventDispatcher;
+        $this->transactionManager = $transactionManager;
     }
 
     public function joinToInterview($lastName, $firstName, $email, $date)
@@ -92,8 +98,46 @@ class  StaffService
             $recruitData->address,
             $recruitData->email
         );
+        $contract = Contract::create($employee, $recruitData->lastName, $recruitData->firstName, $contractDate);
+        $recruit = Recruit::create($employee, Order::create($orderDate), $recruitDate);
+        $transaction = $this->transactionManager->begin();
+        try {
+            $this->employeeRepository->add($employee);
+            $this->contractRepository->add($contract);
+            $this->recruitRepository->add($recruit);
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+        $this->eventDispatcher->dispatch(new EmployeeRecruitEvent($employee));
+        return $employee;
+    }
 
-        // TODO:do
-//        $contract = Contract::create($employee, $recruitData->lastName, $recruitData->firstName, $contractDate);
+    public function createEmployeeByInterview($interviewId, RecruitData $recruitData, $orderDate, $contractDate, $recruitDate)
+    {
+        $interview = $this->interviewRepository->find($interviewId);
+        $employee = Employee::create(
+            $recruitData->firstName,
+            $recruitData->lastName,
+            $recruitData->address,
+            $recruitData->email
+        );
+        $interview->passBy($employee);
+        $contract = Contract::create($employee, $recruitData->lastName, $recruitData->firstName, $contractDate);
+        $recruit = Recruit::create($employee, Order::create($orderDate), $recruitDate);
+        $transaction = $this->transactionManager->begin();
+        try {
+            $this->interviewRepository->save($interview);
+            $this->employeeRepository->add($employee);
+            $this->contractRepository->add($contract);
+            $this->recruitRepository->add($recruit);
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+        $this->eventDispatcher->dispatch(new EmployeeRecruitByInterviewEvent($employee, $interview));
+        return $employee;
     }
 }

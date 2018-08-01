@@ -18,6 +18,13 @@ use Yii;
  */
 class Order extends \yii\db\ActiveRecord
 {
+    public static function create($date)
+    {
+        $order = new self;
+        $order->date = $date;
+        return $order;
+    }
+
     /**
      * {@inheritdoc}
      */

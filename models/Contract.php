@@ -17,11 +17,15 @@ use Yii;
  */
 class Contract extends \yii\db\ActiveRecord
 {
-    //TODO:do
-//    public static function create(Employee $employee, )
-//    {
-//
-//    }
+    public static function create(Employee $employee, $lastName, $firstName, $dateOpen)
+    {
+        $contract = new self;
+        $contract->populateRelation('employee', $employee); // Заполняет связь employee спомощью $employee.
+        $contract->last_name = $lastName;
+        $contract->first_name = $firstName;
+        $contract->date_open = $dateOpen;
+        return $contract;
+    }
 
     /**
      * {@inheritdoc}

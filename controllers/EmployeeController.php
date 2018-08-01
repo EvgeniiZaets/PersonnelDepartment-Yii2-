@@ -108,42 +108,6 @@ class EmployeeController extends Controller
             );
             Yii::$app->session->setFlash('success', 'Employee is recruit.');
             return $this->redirect(['view', 'id' => $employee->id]);
-
-            /////////////TODO:delete
-//            $transaction = Yii::$app->db->beginTransaction();
-//            try {
-//                if ($interview) {
-//                    $interview->status = Interview::STATUS_PASS;
-//                    $interview->save(); // если транзакция откатится, то email всеравно отправиться из afterSave().
-//                }
-//
-//                $model->save(false);
-//
-//                $order = new Order();
-//                $order->date = $model->order_date;
-//                $order->save();
-//
-//                $contract = new Contract();
-//                $contract->employee_id = $model->id;
-//                $contract->last_name = $model->last_name;
-//                $contract->first_name = $model->first_name;
-//                $contract->date_open = $model->contract_date;
-//                $contract->save();
-//
-//                $recruit = new Recruit();
-//                $recruit->employee_id = $model->id;
-//                $recruit->order_id = $order->id;
-//                $recruit->date = $model->recruit_date;
-//                $recruit->save();
-//
-//                $transaction->commit();
-//                Yii::$app->session->setFlash('success', 'Employee is recruit.');
-//                return $this->redirect(['view', 'id' => $model->id]);
-//            } catch (\Exception $e) {
-//                $transaction->rollBack();
-//                throw new ServerErrorHttpException($e->getMessage());
-//            }
-            ///////////
         }
 
         return $this->render('create', [
