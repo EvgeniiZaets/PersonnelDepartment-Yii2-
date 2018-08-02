@@ -20,6 +20,8 @@ class Contract extends \yii\db\ActiveRecord
     public static function create(Employee $employee, $lastName, $firstName, $dateOpen)
     {
         $contract = new self;
+        // P.S фреймворк не сохранит связанные данные присвоенные таким образом, это надо делать вручную
+        // Вложение обьектов по связи друг в друга надо обработать (см. beforSave())
         $contract->populateRelation('employee', $employee); // Заполняет связь employee спомощью $employee.
         $contract->last_name = $lastName;
         $contract->first_name = $firstName;
@@ -63,5 +65,21 @@ class Contract extends \yii\db\ActiveRecord
             'date_close' => 'Date Close',
             'close_reason' => 'Close Reason',
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            // Получаем все связанные записи, которые у нас есть.
+            $related = $this->getRelatedRecords();
+            // Если там присвоен сотрудник
+            /** @var Employee $employee */
+            if (isset($related['employee']) && $employee = $related['employee']) {
+                $employee->save();
+                $this->employee_id = $employee->id; // присваеваем автоинкрементный айдишник после сохраниения.
+            }
+            return true;
+        }
+        return true;
     }
 }
