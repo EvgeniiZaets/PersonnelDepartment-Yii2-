@@ -67,6 +67,11 @@ class Contract extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * Сохранение связанных полей.
+     * @param bool $insert
+     * @return bool
+     */
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {

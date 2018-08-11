@@ -61,6 +61,9 @@ class  EmployeeService
             $recruitData->email
         );
         $contract = Contract::create($employee, $recruitData->lastName, $recruitData->firstName, $contractDate);
+        // C Order отельно работать не нужно, поскольку это вложенная сущность внуть Recruit.
+        // Поэтому для нее не будет отдельного репозитория.
+        // Order будет сохраняться внутри Recruit в beforeSave.
         $recruit = Recruit::create($employee, Order::create($orderDate), $recruitDate);
         $this->transactionManager->execute(function () use ($employee, $contract, $recruit) {
             $this->employeeRepository->add($employee);
