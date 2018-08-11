@@ -20,10 +20,10 @@ class InterviewJoinForm extends Model
     public function rules()
     {
         return [
-            [['date', 'first_name', 'last_name'], 'required'],
+            [['date', 'firstName', 'lastName'], 'required'],
             [['date'], 'date', 'format' => 'php:Y-m-d'],
             [['email'], 'email'],
-            [['first_name', 'last_name', 'email'], 'string', 'max' => 255]
+            [['firstName', 'lastName', 'email'], 'string', 'max' => 255]
         ];
     }
 

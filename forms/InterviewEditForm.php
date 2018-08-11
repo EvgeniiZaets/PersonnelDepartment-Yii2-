@@ -25,9 +25,9 @@ class InterviewEditForm extends Model
     public function rules()
     {
         return [
-            [['first_name', 'last_name'], 'required'],
+            [['firstName', 'lastName'], 'required'],
             [['email'], 'email'],
-            [['first_name', 'last_name', 'email'], 'string', 'max' => 255]
+            [['firstName', 'lastName', 'email'], 'string', 'max' => 255]
         ];
     }
 

@@ -21,8 +21,8 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function add(Employee $employee)
     {
-        if (!$employee->getIsNewRecord())
-            throw new \RuntimeException('Adding model.');
+//        if (!$employee->getIsNewRecord())
+//            throw new \RuntimeException('Adding model.');
 
         if (!$employee->insert(false))
             throw new \RuntimeException('Saving error.');

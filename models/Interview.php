@@ -138,7 +138,22 @@ class Interview extends \yii\db\ActiveRecord
 
     private function guardNotCurrentDate($date)
     {
-        if ($date != $this->date)
+        if ($date == $this->date)
             throw new \DomainException('Date is current.');
+    }
+
+    // Для сохранения связанных данных
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            $related = $this->getRelatedRecords();
+            /** @var Employee $employee */
+            if (isset($related['employee']) && $employee = $related['employee']) {
+                $employee->save();
+                $this->employee_id = $employee->id;
+            }
+            return true;
+        }
+        return false;
     }
 }

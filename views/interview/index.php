@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return InterviewHelper::getStatusName($interview->status);
                 }
             ],
-            'reject_reason:ntext',
+//            'reject_reason:ntext',
             'employee_id',
 
             ['class' => 'yii\grid\ActionColumn'],

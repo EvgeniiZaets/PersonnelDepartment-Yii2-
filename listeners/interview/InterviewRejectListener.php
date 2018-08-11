@@ -1,10 +1,10 @@
 <?php
-namespace app\listeners;
+namespace app\listeners\interview;
 
 use app\events\interview\InterviewJoinEvent;
 use app\services\NotifierInterface;
 
-class InterviewJoinListener
+class InterviewRejectListener
 {
     private $notifier;
 
@@ -15,6 +15,6 @@ class InterviewJoinListener
 
     public function handle(InterviewJoinEvent $event)
     {
-        $this->notifier->notify($event->interview->email, 'You are joined to interview!');
+        $this->notifier->notify($event->interview->email, 'You are failed an interview');
     }
 }

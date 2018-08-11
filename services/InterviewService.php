@@ -65,9 +65,10 @@ class InterviewService
         $this->interviewRepository->delete($interview);
     }
 
+    // Uncomment if needed
     private function guardEmailIsUnique($email)
     {
-        if ($this->interviewRepository->existsByEmail($email))
-            throw new \DomainException('This email is already exists.');
+//        if ($this->interviewRepository->existsByEmail($email))
+//            throw new \DomainException('This email is already exists.');
     }
 }
