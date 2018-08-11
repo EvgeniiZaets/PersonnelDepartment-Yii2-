@@ -10,6 +10,15 @@ $this->title = 'Join to Interview';
 $this->params['breadcrumbs'][] = ['label' => 'Interviews', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+    <div class="alert alert-error alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        <h4><i class="icon fa fa-check"></i>Saved!</h4>
+        <?= Yii::$app->session->getFlash('error') ?>
+    </div>
+<?php endif; ?>
+
 <div class="interview-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
