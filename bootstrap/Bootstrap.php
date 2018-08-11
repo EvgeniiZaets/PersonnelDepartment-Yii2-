@@ -17,7 +17,12 @@ class Bootstrap implements BootstrapInterface
         $container->setSingleton('app\services\NotifierInterface', function () use ($app) {
             return new Notifier($app->params['adminEmail']);
         });
-        $container->setSingleton('app\services\InterviewRepositoryInterface', 'app\services\InterviewRepository');
+        $container->setSingleton('app\repositories\InterviewRepositoryInterface', 'app\repositories\InterviewRepository');
+        $container->setSingleton('app\repositories\ContractRepositoryInterface', 'app\repositories\ContractRepository');
+        $container->setSingleton('app\repositories\EmployeeRepositoryInterface', 'app\repositories\EmployeeRepository');
+        $container->setSingleton('app\repositories\RecruitRepositoryInterface', 'app\repositories\RecruitRepository');
+        $container->setSingleton('app\repositories\PositionRepositoryInterface', 'app\repositories\PositionRepository');
+        $container->setSingleton('app\repositories\AssignmentRepositoryInterface', 'app\repositories\AssignmentRepository');
         $container->setSingleton('app\services\LoggerInterface', 'app\services\Logger');
 
         // Навещиваем обработчики на события.
