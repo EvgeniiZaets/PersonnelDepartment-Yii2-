@@ -18,14 +18,14 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($editForm, 'first_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($editForm, 'firstName')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($editForm, 'last_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($editForm, 'lastName')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($editForm, 'email')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
